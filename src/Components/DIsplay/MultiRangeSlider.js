@@ -10,18 +10,18 @@ const MultiRangeSlider = ({ min, max, setPriceRange, filter }) => {
   const range = useRef(null);
 
   const updateVal = (e) => {
-    const { value } = e.target;
+    let { value } = e.target;
     const { id } = e.currentTarget;
+    let maxlength = max.toString().length;
 
-    if (id === "minVal") {
-      if (value.length === 0) {
-        setMinVal(min);
-      }
-      setMinVal(value);
+    if (id === "minVal" && value < max) {
+      value = value.replace(/\D/g, "");
+      return setMinVal(value.substring(0, maxlength));
     }
 
-    if (id === "maxVal") {
-      setMaxVal(value);
+    if (id === "maxVal" && value <= max) {
+      value = value.replace(/\D/g, "");
+      return setMaxVal(value.substring(0, maxlength));
     }
   };
 
