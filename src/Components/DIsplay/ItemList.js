@@ -3,12 +3,13 @@ import { Context, FavContext } from "../../context";
 import { FaStar, FaStarHalf, FaCartPlus } from "react-icons/fa";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
-import FilterPanel from "./FilterPanel";
+import FilterPanel from "./filter/FilterPanel";
 // import { Products } from "../../assets/objects";
 
 const ItemList = () => {
   const [items, setItems] = useState();
   const [showButton, setShowButton] = useState(undefined);
+  const [imageIndex, setImageIndex] = useState(2);
   const [types, setTypes] = useState();
   const [filter, setFilter] = useState((v) => {
     let storage = localStorage.getItem("cart");
@@ -70,10 +71,8 @@ const ItemList = () => {
           if (!itemTypes.includes(query)) {
             itemTypes.push(query);
           }
-
           setTypes(itemTypes);
         }
-
         return setItems(json.products);
       });
   }, []);
@@ -87,7 +86,7 @@ const ItemList = () => {
   }, [filter]);
 
   return (
-    <div className="h-full min-h-screen flex flex-col items-center justify-start w-full md:w-full xl:w-2/3 md:m-auto max-w-screen-2xl">
+    <div className="h-full min-h-screen flex flex-col items-center justify-start w-full md:w-full xl:w-2/3 md:m-auto max-w-screen-2xl select-none">
       {/* Filter tab */}
       <FilterPanel
         setFilter={setFilter}
@@ -95,7 +94,7 @@ const ItemList = () => {
         filter={filter}
         items={items}
       />
-      <ul className="mt-6 grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 xl:gap-x-8 ">
+      <ul className="mt-6 grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 xl:gap-x-8">
         {items && filterItems().length > 0 ? (
           filterItems().map((item, index) => (
             <li
@@ -104,12 +103,33 @@ const ItemList = () => {
               onMouseOver={() => setShowButton(item.id)}
               onMouseLeave={() => setShowButton(undefined)}
             >
-              <div className="w-full h-2/3 md:h-3/4">
+              <div className="w-full h-2/3 md:h-3/4 relative">
                 <img
-                  className="object-contain w-full h-full bg-white"
-                  src={item.images[0]}
+                  className={`object-contain w-full h-full bg-white`}
+                  src={
+                    showButton === item.id
+                      ? item.images[imageIndex]
+                      : item.images[0]
+                  }
                   alt={item.title}
                 />
+                {/* Images */}
+                {showButton === item.id && (
+                  <div className=" absolute bottom-0 left-0 bg-white w-full pt-3 ">
+                    <div className="w-full flex justify-start ">
+                      {item.images.slice(0, 4).map((img, i) => (
+                        <img
+                          className="object-cover w-8 h-8 md:w-14 md:h-14 border border-white hover:border-black"
+                          src={img}
+                          alt={i}
+                          key={i}
+                          onMouseOver={() => setImageIndex(i)}
+                          onMouseLeave={() => setImageIndex(0)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="w-full ">
                 <div className="mb-1">
