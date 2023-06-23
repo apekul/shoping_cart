@@ -98,13 +98,14 @@ const ItemList = () => {
       <ul className="mt-6 grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 xl:gap-x-8">
         {items && filterItems().length > 0 ? (
           filterItems().map((item, index) => (
-            <Link to={`/item/${item.id}`} state={{ item }} key={index}>
-              <li
-                className=" relative w-36 mx-4 h-60 md:w-60 md:h-96 flex flex-col items-start justify-start border-b hover:shadow-xl rounded-md p-2 transition ease-in-out delay-50 cursor-pointer"
-                onMouseOver={() => setShowButton(item.id)}
-                onMouseLeave={() => setShowButton(undefined)}
-              >
-                <div className="w-full h-2/3 md:h-3/4 relative ">
+            <li
+              className=" relative w-36 mx-4 h-60 md:w-60 md:h-96 flex flex-col items-start justify-start border-b hover:shadow-xl rounded-md p-2 transition ease-in-out delay-50 cursor-pointer"
+              onMouseOver={() => setShowButton(item.id)}
+              onMouseLeave={() => setShowButton(undefined)}
+              key={index}
+            >
+              <div className="w-full h-2/3 md:h-3/4 relative ">
+                <Link to={`/item/${item.id}`} state={{ item }}>
                   <img
                     className={`object-contain w-full h-full bg-white `}
                     src={
@@ -135,58 +136,57 @@ const ItemList = () => {
                       ))}
                     </div>
                   </div>
-                </div>
-                <div className="w-full ">
-                  <div className="mb-1">
-                    <p className="truncate ">{item.title}</p>
+                </Link>
+              </div>
 
-                    {/* Stars Rate */}
-                    <div className="relative">
-                      <div className="flex items-center relative">
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <div key={i} className="text-gray-300">
-                            <FaStar />
-                          </div>
-                        ))}
-                        <p className="ml-1">({item.rating})</p>
-                      </div>
+              <div className="w-full ">
+                <div className="mb-1">
+                  <p className="truncate ">{item.title}</p>
 
-                      <div className="flex items-center justify-start text-yellow-400 absolute top-1">
-                        {Array.from({ length: item.rating }, (_, i) => (
-                          <div key={i}>
-                            <FaStar />
-                          </div>
-                        ))}
-                        {Math.round(item.rating) > item.rating && (
-                          <FaStarHalf />
-                        )}
-                      </div>
+                  {/* Stars Rate */}
+                  <div className="relative">
+                    <div className="flex items-center relative">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <div key={i} className="text-gray-300">
+                          <FaStar />
+                        </div>
+                      ))}
+                      <p className="ml-1">({item.rating})</p>
+                    </div>
+
+                    <div className="flex items-center justify-start text-yellow-400 absolute top-1">
+                      {Array.from({ length: item.rating }, (_, i) => (
+                        <div key={i}>
+                          <FaStar />
+                        </div>
+                      ))}
+                      {Math.round(item.rating) > item.rating && <FaStarHalf />}
                     </div>
                   </div>
-                  <p className="">{item.price}zł</p>
-
-                  <button
-                    onClick={() => addFavItem(item)}
-                    className={`absolute top-3 right-3 p-2 rounded-full text-xl flex bg-white hover:bg-gray-200`}
-                  >
-                    {favItems.some((e) => e.id === item.id) ? (
-                      <AiFillHeart className="text-red-500" />
-                    ) : (
-                      <AiOutlineHeart className="text-gray-700" />
-                    )}
-                  </button>
-
-                  {showButton === item.id && (
-                    <button
-                      className="absolute bottom-3 right-3 border border-green-500 text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-full text-xs md:text-xl flex items-center justify-center"
-                      onClick={() => updateCartItems(item)}
-                    >
-                      <FaCartPlus />
-                    </button>
-                  )}
                 </div>
-              </li>
-            </Link>
+                <p className="">{item.price}zł</p>
+
+                <button
+                  onClick={() => addFavItem(item)}
+                  className={`absolute top-3 right-3 p-2 rounded-full text-xl flex bg-white hover:bg-gray-200`}
+                >
+                  {favItems.some((e) => e.id === item.id) ? (
+                    <AiFillHeart className="text-red-500" />
+                  ) : (
+                    <AiOutlineHeart className="text-gray-700" />
+                  )}
+                </button>
+
+                {showButton === item.id && (
+                  <button
+                    className="absolute bottom-3 right-3 border border-green-500 text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-full text-xs md:text-xl flex items-center justify-center"
+                    onClick={() => updateCartItems(item)}
+                  >
+                    <FaCartPlus />
+                  </button>
+                )}
+              </div>
+            </li>
           ))
         ) : (
           <div className="px-5 text-xl bg-gray-200 py-10 col-span-2 lg:col-span-3 2xl:col-span-4">
