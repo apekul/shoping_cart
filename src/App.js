@@ -5,6 +5,7 @@ import Navbar from "./Components/Nav/Navbar";
 import Footer from "./Components/Footer/Footer";
 import Cart from "./Components/Cart/Cart";
 import Fav from "./Components/Favourite/Fav";
+import SingleItemPage from "./Components/DIsplay/SingleItemPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
               <Route path="/" element={<ItemList />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/favourite" element={<Fav />} />
+              <Route path="/item/:id" element={<SingleItemPage />} />
             </Routes>
             <Footer />
           </div>

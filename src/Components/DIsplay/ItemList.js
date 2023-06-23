@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context, FavContext } from "../../context";
 import { FaStar, FaStarHalf, FaCartPlus } from "react-icons/fa";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 import FilterPanel from "./filter/FilterPanel";
 // import { Products } from "../../assets/objects";
@@ -9,7 +10,7 @@ import FilterPanel from "./filter/FilterPanel";
 const ItemList = () => {
   const [items, setItems] = useState();
   const [showButton, setShowButton] = useState(undefined);
-  const [imageIndex, setImageIndex] = useState(2);
+  const [imageIndex, setImageIndex] = useState(0);
   const [types, setTypes] = useState();
   const [filter, setFilter] = useState((v) => {
     let storage = localStorage.getItem("cart");
@@ -97,25 +98,30 @@ const ItemList = () => {
       <ul className="mt-6 grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 xl:gap-x-8">
         {items && filterItems().length > 0 ? (
           filterItems().map((item, index) => (
-            <li
-              key={index}
-              className=" relative w-36 mx-4 h-60 md:w-60 md:h-96 flex flex-col items-start justify-start border-b hover:shadow-xl rounded-md p-2 transition ease-in-out delay-50 cursor-pointer"
-              onMouseOver={() => setShowButton(item.id)}
-              onMouseLeave={() => setShowButton(undefined)}
-            >
-              <div className="w-full h-2/3 md:h-3/4 relative">
-                <img
-                  className={`object-contain w-full h-full bg-white`}
-                  src={
-                    showButton === item.id
-                      ? item.images[imageIndex]
-                      : item.images[0]
-                  }
-                  alt={item.title}
-                />
-                {/* Images */}
-                {showButton === item.id && (
-                  <div className=" absolute bottom-0 left-0 bg-white w-full pt-3 ">
+            <Link to={`/item/${item.id}`} state={{ item }} key={index}>
+              <li
+                className=" relative w-36 mx-4 h-60 md:w-60 md:h-96 flex flex-col items-start justify-start border-b hover:shadow-xl rounded-md p-2 transition ease-in-out delay-50 cursor-pointer"
+                onMouseOver={() => setShowButton(item.id)}
+                onMouseLeave={() => setShowButton(undefined)}
+              >
+                <div className="w-full h-2/3 md:h-3/4 relative ">
+                  <img
+                    className={`object-contain w-full h-full bg-white `}
+                    src={
+                      showButton === item.id
+                        ? item.images[imageIndex]
+                        : item.images[0]
+                    }
+                    alt={item.title}
+                  />
+                  {/* Images */}
+                  <div
+                    className={`absolute bottom-0 left-0 bg-white w-full py-3 transition ease-in-out ${
+                      showButton === item.id
+                        ? "-translate-y-0 visible"
+                        : "invisible translate-y-2 "
+                    }`}
+                  >
                     <div className="w-full flex justify-start ">
                       {item.images.slice(0, 4).map((img, i) => (
                         <img
@@ -129,56 +135,58 @@ const ItemList = () => {
                       ))}
                     </div>
                   </div>
-                )}
-              </div>
-              <div className="w-full ">
-                <div className="mb-1">
-                  <p className="truncate ">{item.title}</p>
+                </div>
+                <div className="w-full ">
+                  <div className="mb-1">
+                    <p className="truncate ">{item.title}</p>
 
-                  {/* Stars Rate */}
-                  <div className="relative">
-                    <div className="flex items-center relative">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <div key={i} className="text-gray-300">
-                          <FaStar />
-                        </div>
-                      ))}
-                      <p className="ml-1">({item.rating})</p>
-                    </div>
+                    {/* Stars Rate */}
+                    <div className="relative">
+                      <div className="flex items-center relative">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <div key={i} className="text-gray-300">
+                            <FaStar />
+                          </div>
+                        ))}
+                        <p className="ml-1">({item.rating})</p>
+                      </div>
 
-                    <div className="flex items-center justify-start text-yellow-400 absolute top-1">
-                      {Array.from({ length: item.rating }, (_, i) => (
-                        <div key={i}>
-                          <FaStar />
-                        </div>
-                      ))}
-                      {Math.round(item.rating) > item.rating && <FaStarHalf />}
+                      <div className="flex items-center justify-start text-yellow-400 absolute top-1">
+                        {Array.from({ length: item.rating }, (_, i) => (
+                          <div key={i}>
+                            <FaStar />
+                          </div>
+                        ))}
+                        {Math.round(item.rating) > item.rating && (
+                          <FaStarHalf />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <p className="">{item.price}zł</p>
+                  <p className="">{item.price}zł</p>
 
-                <button
-                  onClick={() => addFavItem(item)}
-                  className={`absolute top-3 right-3 p-2 rounded-full text-xl flex bg-white hover:bg-gray-200`}
-                >
-                  {favItems.some((e) => e.id === item.id) ? (
-                    <AiFillHeart className="text-red-500" />
-                  ) : (
-                    <AiOutlineHeart className="text-gray-700" />
-                  )}
-                </button>
-
-                {showButton === item.id && (
                   <button
-                    className="absolute bottom-3 right-3 border border-green-500 text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-full text-xs md:text-xl flex items-center justify-center"
-                    onClick={() => updateCartItems(item)}
+                    onClick={() => addFavItem(item)}
+                    className={`absolute top-3 right-3 p-2 rounded-full text-xl flex bg-white hover:bg-gray-200`}
                   >
-                    <FaCartPlus />
+                    {favItems.some((e) => e.id === item.id) ? (
+                      <AiFillHeart className="text-red-500" />
+                    ) : (
+                      <AiOutlineHeart className="text-gray-700" />
+                    )}
                   </button>
-                )}
-              </div>
-            </li>
+
+                  {showButton === item.id && (
+                    <button
+                      className="absolute bottom-3 right-3 border border-green-500 text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-full text-xs md:text-xl flex items-center justify-center"
+                      onClick={() => updateCartItems(item)}
+                    >
+                      <FaCartPlus />
+                    </button>
+                  )}
+                </div>
+              </li>
+            </Link>
           ))
         ) : (
           <div className="px-5 text-xl bg-gray-200 py-10 col-span-2 lg:col-span-3 2xl:col-span-4">
